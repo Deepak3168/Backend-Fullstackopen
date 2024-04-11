@@ -1,0 +1,16 @@
+{
+  "name": "phonebook-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start":"node index.js",
+    "dev":"nodemon index.js"
+  },
+  "author": "deepak",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
