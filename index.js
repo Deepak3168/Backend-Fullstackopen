@@ -30,6 +30,9 @@ let persons = [
     }
 ]
 
+app.get('/',(request,response)=> {
+    response.send('<h1>Hello world </h1> </br> <p>Here is our api on /api/persons</p>');
+})
 app.get('/api/persons/',(request,response)=>{
     response.json(persons)
 })
