@@ -1,8 +1,10 @@
 const express = require ('express')
+const cors = require('cors')
 
 const app = express()
 
 app.use(express.json());
+app.use(cors())
 
 
 let persons = [
@@ -78,9 +80,10 @@ app.post('/api/persons',(request,response)=> {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    notes = persons.filter( person => person.id !== id)
+    persons = persons.filter( person => person.id !== id)
     response.status(204).end()
 })
+
 
 
 const PORT = 3001
