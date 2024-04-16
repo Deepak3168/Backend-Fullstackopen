@@ -1,5 +1,7 @@
 const express = require ('express')
 const cors = require('cors')
+require('dotenv').config()
+const Person = require('./models/persons')
 
 const app = express()
 app.use(express.static('dist'))
@@ -33,51 +35,36 @@ let persons = [
 app.get('/',(request,response)=> {
     response.send('<h1>Hello world </h1> </br> <p>Here is our api on /api/persons</p>');
 })
-app.get('/api/persons/',(request,response)=>{
-    response.json(persons)
-})
-
-app.get('/api/persons/:id',(request,response)=> {
-    const id = request.params.id
-    console.log(id)
-    const person = persons.find(person => person.id == id)
-    console.log(person)
-    if (person) {
-        response.json(person)
-    }
-    else {
-        response.status(404).end()
-    }
-})
+app.get('/api/persons', (request, response) => {
+    Person.find({}).then(persons => {
+      response.json(persons)
+    })
+  })
+  
+  app.get('/api/notes/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
+      response.json(person)
+    })
+  })
 
 
 app.get('/info',(request,response)=> {
-    const count = persons.length
     const date = new Date
-    response.send(`<p>Phonebook has info for ${count} people </p> <br/> <p> ${date}</p>`)
+    response.send(`<p>Phonebook has info for  people </p> <br/> <p> ${date}</p>`)
 })
 
 app.post('/api/persons',(request,response)=> {
     const body = request.body
-    if (!body.name) {
-        response.status(400).json({
-            error:"name is missing"
-        })
+    if (body.name == undefined){
+        return response.status(400).json({error:'content missing'})
     }
-    const exist = persons.find(person => person.name==body.name)
-    if((exist) || (!body.number)) {
-        response.status(400).json({
-            error:"name already exist or name must be unique "
-        })
-    }else {
-        const person = {
-            id:Math.floor(Math.random() * 100) + 1,
-            name:body.name,
-            number:body.number
-        }
-        persons=persons.concat(person)
-        response.json(person)
-    }
+    const person = new Person({
+        name:body.name,
+        number:body.number,
+    })
+    person.save().then(savedNote => {
+        response.json(savedNote)
+    })
 
 })
 
@@ -89,7 +76,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 
 
-const PORT = 3001
+const PORT = process.env.PORT
 
 app.listen(PORT,() => {
     console.log(`server running at port ${PORT}`)
